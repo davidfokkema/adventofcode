@@ -15,7 +15,7 @@ def oneline_inverse_captcha(input):
 
 
 def halfway_inverse_captcha(input):
-    halfway = int(len(input) / 2)
+    halfway = len(input) // 2
     next_halfway_digits = input[halfway:] + input[:halfway]
     sum = 0
 
