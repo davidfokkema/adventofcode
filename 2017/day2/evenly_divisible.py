@@ -4,7 +4,7 @@ import itertools
 
 def find_evenly_divisible_numbers(numbers):
     for a, b in itertools.permutations(numbers, 2):
-        if a // b * b == a:
+        if not (a % b):
             return a, b
 
 
