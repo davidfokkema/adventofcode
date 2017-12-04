@@ -7,3 +7,7 @@ def number_of_steps(square_id):
         return 2
     elif square_id == 1024:
         return 31
+
+
+def manhattan_distance(x, y):
+    return abs(x) + abs(y)
