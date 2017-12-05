@@ -36,6 +36,16 @@ class SpiralMemoryTest(unittest.TestCase):
         self.assertEqual(positions[5], (-1, 0))
         self.assertEqual(positions[9], (2, -1))
 
+    def test_generate_memory_cells(self):
+        contents = list(itertools.islice(mem.generate_memory_cells(), 0, 5))
+        self.assertEqual(contents, [1, 1, 2, 4, 5])
+
+    def test_first_memory_cell_greater_than(self):
+        self.assertEqual(mem.first_memory_cell_greater_than(1), 2)
+        self.assertEqual(mem.first_memory_cell_greater_than(2), 4)
+        self.assertEqual(mem.first_memory_cell_greater_than(4), 5)
+        self.assertEqual(mem.first_memory_cell_greater_than(747), 806)
+
 
 if __name__ == '__main__':
     unittest.main()
