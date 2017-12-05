@@ -11,6 +11,20 @@ def get_coordinates_for_square(square_id):
                                  square_id))[0]
 
 
+def generate_grid_positions():
+    x, y = 0, 0
+    for direction in generate_spiral_steps():
+        yield (x, y)
+        if direction == 'RIGHT':
+            x += 1
+        elif direction == 'UP':
+            y += 1
+        elif direction == 'LEFT':
+            x -= 1
+        elif direction == 'DOWN':
+            y -= 1
+
+
 def generate_spiral_steps():
     directions = itertools.cycle(['RIGHT', 'UP', 'LEFT', 'DOWN'])
     step_increase = itertools.cycle([0, 1])
@@ -24,20 +38,6 @@ def generate_spiral_steps():
 
 def manhattan_distance(x, y):
     return abs(x) + abs(y)
-
-
-def generate_grid_positions():
-    x, y = 0, 0
-    for direction in generate_spiral_steps():
-        yield (x, y)
-        if direction == 'RIGHT':
-            x += 1
-        elif direction == 'UP':
-            y += 1
-        elif direction == 'LEFT':
-            x -= 1
-        elif direction == 'DOWN':
-            y -= 1
 
 
 if __name__ == '__main__':
