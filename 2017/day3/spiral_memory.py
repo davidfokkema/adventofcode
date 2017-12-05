@@ -1,5 +1,4 @@
 import itertools
-import time
 
 
 def number_of_steps(square_id):
@@ -38,6 +37,4 @@ def manhattan_distance(x, y):
 
 
 if __name__ == '__main__':
-    for step in generate_spiral_steps():
-        print(step)
-        time.sleep(.5)
+    print(number_of_steps(325489))
