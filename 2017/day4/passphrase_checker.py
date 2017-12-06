@@ -13,3 +13,7 @@ def count_valid_passphrases(filename):
             if is_valid(passphrase.rstrip()):
                 sum += 1
     return sum
+
+
+if __name__ == '__main__':
+    print('Day 4, part 1:', count_valid_passphrases('input.txt'))
