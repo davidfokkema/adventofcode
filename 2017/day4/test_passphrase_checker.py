@@ -32,6 +32,14 @@ class PassphraseCheckerTest(unittest.TestCase):
         for phrase, is_valid in SECURE_PASSPHRASES:
             self.assertEqual(pc.is_secure(phrase), is_valid)
 
+    def test_count_secure_passphrases(self):
+        read_data = '\n'.join([u[0] for u in SECURE_PASSPHRASES])
+        mock = mock_open(read_data=read_data)
+        with patch('passphrase_checker.open', mock):
+            sum = pc.count_secure_passphrases(sentinel.filename)
+            mock.assert_called_once_with(sentinel.filename)
+            self.assertEqual(sum, 3)
+
 
 if __name__ == '__main__':
     unittest.main()
