@@ -38,7 +38,6 @@ class JumpTest(unittest.TestCase):
 
         actual_pointer, actual_instructions = jump_sequence[0]
         for expected_pointer, expected_instructions in jump_sequence:
-            print("Check", expected_pointer, expected_instructions)
             self.assertEqual(expected_pointer, actual_pointer)
             self.assertEqual(expected_instructions, actual_instructions)
             if actual_pointer is not None:
@@ -51,6 +50,13 @@ class JumpTest(unittest.TestCase):
         expected = len(JUMP_SEQUENCE) - 1
         actual = jump.number_of_jumps_to_escape(instructions, pointer)
         self.assertEqual(actual, expected)
+
+    def test_number_of_strange_jumps_to_escape(self):
+        jump_sequence = analyze_jump_sequence(JUMP_SEQUENCE)
+        pointer, instructions = jump_sequence[0]
+        N = jump.number_of_strange_jumps_to_escape(instructions, pointer)
+        self.assertEqual(N, 10)
+        self.assertEqual(instructions, [2, 3, 2, 3, -1])
 
 
 if __name__ == '__main__':
