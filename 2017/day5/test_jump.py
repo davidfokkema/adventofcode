@@ -45,6 +45,13 @@ class JumpTest(unittest.TestCase):
                 actual_pointer = jump.perform_jump(actual_instructions,
                                                    actual_pointer)
 
+    def test_number_of_jumps_to_escape(self):
+        jump_sequence = analyze_jump_sequence(JUMP_SEQUENCE)
+        pointer, instructions = jump_sequence[0]
+        expected = len(JUMP_SEQUENCE) - 1
+        actual = jump.number_of_jumps_to_escape(instructions, pointer)
+        self.assertEqual(actual, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
