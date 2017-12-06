@@ -1,8 +1,22 @@
+import itertools
+
+
 def is_valid(passphrase):
     words = passphrase.split(' ')
     for n, word in enumerate(words):
         if word in words[:n]:
             return False
+    return True
+
+
+def is_secure(passphrase):
+    words = passphrase.split(' ')
+    for n, word in enumerate(words):
+        anagrams = [''.join(u) for u in itertools.permutations(word,
+                                                               len(word))]
+        for anagram in anagrams:
+            if anagram in words[:n]:
+                return False
     return True
 
 
