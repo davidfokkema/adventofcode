@@ -17,3 +17,9 @@ def number_of_jumps_to_escape(instructions, pointer):
         else:
             N += 1
     return N
+
+
+if __name__ == '__main__':
+    with open('input.txt') as f:
+        instructions = [int(u) for u in f.readlines()]
+        print("Day 5, part 1:", number_of_jumps_to_escape(instructions, 0))
