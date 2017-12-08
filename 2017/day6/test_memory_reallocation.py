@@ -35,6 +35,10 @@ class MemoryAllocationTest(unittest.TestCase):
         memory_bank = MEMORY_CYCLES[0]
         self.assertEqual(alloc.cycles_before_loop(memory_bank), 5)
 
+    def test_loop_size(self):
+        memory_bank = MEMORY_CYCLES[0]
+        self.assertEqual(alloc.loop_size(memory_bank), (5, 4))
+
 
 if __name__ == '__main__':
     unittest.main()
