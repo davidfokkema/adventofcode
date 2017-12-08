@@ -31,7 +31,7 @@ class MemoryAllocationTest(unittest.TestCase):
         self.assertEqual(alloc.cycles_before_loop([1, 1]), 2)
         # [2, 1, 0] -> [0, 2, 1] -> [1, 0, 2] -> [2, 1, 0]
         self.assertEqual(alloc.cycles_before_loop([2, 1, 0]), 3)
-        
+
         memory_bank = MEMORY_CYCLES[0]
         self.assertEqual(alloc.cycles_before_loop(memory_bank), 5)
 
