@@ -29,3 +29,10 @@ def cycle(memory_banks):
         container -= 1
 
     return list(memory_banks)
+
+
+if __name__ == '__main__':
+    with open('input.txt') as f:
+        line = f.readline()
+    memory_bank = [int(u) for u in line.split('\t')]
+    print("Day 6, part 1:", cycles_before_loop(memory_bank))
