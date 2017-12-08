@@ -24,6 +24,17 @@ class MemoryAllocationTest(unittest.TestCase):
             actual = alloc.cycle(actual)
             self.assertEqual(actual, expected)
 
+    def test_cycles_before_loop(self):
+        # [1, 0] -> [0, 1] -> [1, 0]
+        self.assertEqual(alloc.cycles_before_loop([1, 0]), 2)
+        # [1, 1] -> [0, 2] -> [1, 1]
+        self.assertEqual(alloc.cycles_before_loop([1, 1]), 2)
+        # [2, 1, 0] -> [0, 2, 1] -> [1, 0, 2] -> [2, 1, 0]
+        self.assertEqual(alloc.cycles_before_loop([2, 1, 0]), 3)
+        
+        memory_bank = MEMORY_CYCLES[0]
+        self.assertEqual(alloc.cycles_before_loop(memory_bank), 5)
+
 
 if __name__ == '__main__':
     unittest.main()
