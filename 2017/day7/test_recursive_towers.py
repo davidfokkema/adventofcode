@@ -19,24 +19,31 @@ ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
 cntj (57)
 """
-
+with io.StringIO(EXAMPLE_INPUT) as f:
+    INPUT_DATA = f.readlines()
+    
 
 class RecursiveTowerTest(unittest.TestCase):
     def test_find_bottom_program(self):
-        with io.StringIO(EXAMPLE_INPUT) as f:
-            input_data = f.readlines()
-        bottom = tower.find_bottom_program(input_data)
+        bottom = tower.find_bottom_program(INPUT_DATA)
         self.assertEqual(bottom, 'tknk')
 
     def test_find_upper_programs(self):
-        with io.StringIO(EXAMPLE_INPUT) as f:
-            input_data = f.readlines()
-        upper_programs = tower.find_upper_programs(input_data)
+        upper_programs = tower.find_upper_programs(INPUT_DATA)
         self.assertIn('ktlj', upper_programs)
         self.assertIn('qoyq', upper_programs)
         self.assertIn('ebii', upper_programs)
         self.assertNotIn('tknk', upper_programs)
 
+    def test_build_tree_structure(self):
+        tower_structure = tower.build_tree_structure(INPUT_DATA)
+        self.assertEqual(tower_structure['qoyq'], {'weight': 66,
+                                                   'children': []})
+        self.assertEqual(tower_structure['ugml'], {'weight': 68,
+                                                   'children': ['gyxo', 'ebii',
+                                                                'jptl']})
+
 
 if __name__ == '__main__':
     unittest.main()
+
