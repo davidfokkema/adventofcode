@@ -20,8 +20,8 @@ def find_upper_programs(input_data):
             programs = re.findall('[a-z]+', top)
             upper_programs.extend(programs)
     return upper_programs
-  
-      
+
+
 def build_tree_structure(input_data):
     programs = {}
     for line in input_data:
@@ -33,7 +33,7 @@ def build_tree_structure(input_data):
             children = []
         programs[name] = {'weight': int(weight), 'children': children}
     return programs
-          
+
 
 if __name__ == '__main__':
     with open('input.txt') as f:

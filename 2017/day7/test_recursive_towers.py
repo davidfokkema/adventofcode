@@ -21,7 +21,7 @@ cntj (57)
 """
 with io.StringIO(EXAMPLE_INPUT) as f:
     INPUT_DATA = f.readlines()
-    
+
 
 class RecursiveTowerTest(unittest.TestCase):
     def test_find_bottom_program(self):
@@ -46,4 +46,3 @@ class RecursiveTowerTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
