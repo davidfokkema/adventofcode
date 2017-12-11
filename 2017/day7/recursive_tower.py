@@ -1,4 +1,10 @@
+import collections
 import re
+
+
+class UnbalancedException(RuntimeError):
+    def __init__(self, correct_weight):
+        self.correct_weight = correct_weight
 
 
 def find_bottom_program(input_data):
@@ -33,6 +39,29 @@ def build_tree_structure(input_data):
             children = []
         programs[name] = {'weight': int(weight), 'children': children}
     return programs
+
+
+def get_balanced_tower_weight(programs, name):
+    program = programs[name]
+    weight = program['weight']
+    sub_weights = []
+    children = program['children']
+    if children:
+        for child in children:
+            sub_weights.append(get_balanced_tower_weight(programs, child))
+        raise_if_unbalanced(programs, children, sub_weights)
+    return weight + sum(sub_weights)
+
+
+def raise_if_unbalanced(programs, children, weights):
+    counts = collections.Counter(weights)
+    if len(counts) > 1:
+        (correct, _), (anomalous, _) = counts.most_common()
+        dvalue = correct - anomalous
+        idx = weights.index(anomalous)
+        anomalous_program = programs[children[idx]]
+        correct_weight = anomalous_program['weight'] + dvalue
+        raise UnbalancedException(correct_weight=correct_weight)
 
 
 if __name__ == '__main__':

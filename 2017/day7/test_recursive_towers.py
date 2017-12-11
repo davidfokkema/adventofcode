@@ -1,5 +1,6 @@
 import io
 import unittest
+from unittest.mock import patch
 
 import recursive_tower as tower
 
@@ -42,6 +43,44 @@ class RecursiveTowerTest(unittest.TestCase):
         self.assertEqual(tower_structure['ugml'], {'weight': 68,
                                                    'children': ['gyxo', 'ebii',
                                                                 'jptl']})
+
+    def test_get_balanced_tower_weight_simple_case(self):
+        programs = {'foo': {'weight': 10, 'children': []}}
+        weight = tower.get_balanced_tower_weight(programs, 'foo')
+        self.assertEqual(weight, 10)
+
+    def test_get_balanced_tower_weight_includes_children(self):
+        programs = {'foo': {'weight': 10, 'children': ['bar', 'baz', 'hoi']},
+                    'bar': {'weight': 11, 'children': []},
+                    'baz': {'weight': 5, 'children': ['gee']},
+                    'gee': {'weight': 6, 'children': []},
+                    'hoi': {'weight': 11, 'children': []}}
+        weight = tower.get_balanced_tower_weight(programs, 'foo')
+        self.assertEqual(weight, 43)
+
+    @patch.object(tower, 'raise_if_unbalanced')
+    def test_get_balanced_tower_weight_calls_raise_if_unbalanced(
+            self, mock_unbalanced):
+
+        programs = {'foo': {'weight': 10, 'children': ['bar', 'baz']},
+                    'bar': {'weight': 11, 'children': []},
+                    'baz': {'weight': 12, 'children': []}}
+        tower.get_balanced_tower_weight(programs, 'foo')
+        mock_unbalanced.assert_called_once_with(programs, ['bar', 'baz'],
+                                                [11, 12])
+
+    def test_raise_if_unbalanced_raises_exception(self):
+        # baz needs to have a weight of 5 to balance the tower
+        programs = {'foo': {'weight': 10, 'children': ['bar', 'baz', 'hoi']},
+                    'bar': {'weight': 11, 'children': []},
+                    'baz': {'weight': 2, 'children': ['gee']},
+                    'gee': {'weight': 6, 'children': []},
+                    'hoi': {'weight': 11, 'children': []}}
+        with self.assertRaises(tower.UnbalancedException) as cm:
+            tower.raise_if_unbalanced(programs, ['bar', 'baz', 'hoi'],
+                                      [11, 8, 11])
+        raised_exception = cm.exception
+        self.assertEqual(raised_exception.correct_weight, 5)
 
 
 if __name__ == '__main__':
