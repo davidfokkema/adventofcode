@@ -67,4 +67,12 @@ def raise_if_unbalanced(programs, children, weights):
 if __name__ == '__main__':
     with open('input.txt') as f:
         input_data = f.readlines()
-    print("Day 7, part 1:", find_bottom_program(input_data))
+
+    bottom = find_bottom_program(input_data)
+    print("Day 7, part 1:", bottom)
+
+    programs = build_tree_structure(input_data)
+    try:
+        get_balanced_tower_weight(programs, bottom)
+    except UnbalancedException as exc:
+        print("Day 7, part 2:", exc.correct_weight)
