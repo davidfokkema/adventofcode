@@ -1,4 +1,12 @@
 class Registers(object):
+    def __init__(self):
+        self.registers = {}
+
+    def parse_file(self, filename):
+        with open(filename) as f:
+            for line in f.readlines():
+                self.process_and_execute_instruction(line)
+
     def process_and_execute_instruction(self, instruction):
         code, comparison = self.parse_instruction(instruction)
         if self.is_true(comparison):
@@ -40,3 +48,6 @@ class Registers(object):
             self.registers[register] -= value
         else:
             raise RuntimeError("Unknown operator", operator)
+
+    def get_largest_value(self):
+        return max(self.registers.values())

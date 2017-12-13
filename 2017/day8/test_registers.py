@@ -1,5 +1,7 @@
+import os
+import tempfile
 import unittest
-from unittest.mock import patch, sentinel
+from unittest.mock import patch, sentinel, mock_open, call
 
 from registers import Registers
 
@@ -44,6 +46,11 @@ class ProcessAndExecuteTest(unittest.TestCase):
 class RegisterTest(unittest.TestCase):
     def setUp(self):
         self.registers = Registers()
+
+    def test_init_creates_registers(self):
+        self.assertNotIn('registers', Registers.__dict__)
+        registers = Registers()
+        self.assertIsInstance(registers.registers, dict)
 
     def test_parse_instruction(self):
         code, comparison = self.registers.parse_instruction('b inc 5 if a > 1')
@@ -97,6 +104,38 @@ class RegisterTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.registers.execute_instruction(('a', 'mul', 2))
+
+    @patch.object(Registers, 'process_and_execute_instruction')
+    def test_parse_file(self, mock_process):
+        m = mock_open(read_data='foo\nbar\n')
+        with patch('registers.open', m):
+            self.registers.parse_file(sentinel.filename)
+        m.assert_called_once_with(sentinel.filename)
+        mock_process.assert_has_calls([call('foo\n'), call('bar\n')])
+
+    def test_get_largest_value(self):
+        self.registers.registers = {'a': 1, 'b': -10, 'c': 5}
+        self.assertEqual(self.registers.get_largest_value(), 5)
+
+
+class RegisterAcceptanceTest(unittest.TestCase):
+    def test_example(self):
+        example_data = '\n'.join(['b inc 5 if a > 1',
+                                  'a inc 1 if b < 5',
+                                  'c dec -10 if a >= 1',
+                                  'c inc -20 if c == 10',
+                                  ''])
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+                f.write(example_data)
+
+            registers = Registers()
+            registers.parse_file(f.name)
+        finally:
+            os.remove(f.name)
+
+        self.assertEqual(registers.registers, {'a': 1, 'c': -10})
+        self.assertEqual(registers.get_largest_value(), 1)
 
 
 if __name__ == '__main__':
