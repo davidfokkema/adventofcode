@@ -46,8 +46,57 @@ class RegisterTest(unittest.TestCase):
         self.registers = Registers()
 
     def test_parse_instruction(self):
-        return_values = self.registers.parse_instruction('b inc 5 if a > 1')
-        self.assertEqual(return_values, ('b', 'inc', 5, 'a', '>', 1))
+        code, comparison = self.registers.parse_instruction('b inc 5 if a > 1')
+        self.assertEqual(code, ('b', 'inc', 5))
+        self.assertEqual(comparison, ('a', '>', 1))
+
+    def test_is_true(self):
+        self.registers.registers = {'a': 10}
+
+        self.assertTrue(self.registers.is_true(('a', '>', 1)))
+        self.assertFalse(self.registers.is_true(('a', '>', 10)))
+
+        self.assertTrue(self.registers.is_true(('foo', '>', -1)))
+        self.assertFalse(self.registers.is_true(('bar', '>', 0)))
+
+        self.assertTrue(self.registers.is_true(('a', '<', 11)))
+        self.assertFalse(self.registers.is_true(('a', '<', 9)))
+
+        self.assertTrue(self.registers.is_true(('a', '==', 10)))
+        self.assertFalse(self.registers.is_true(('a', '==', 1)))
+
+        self.assertTrue(self.registers.is_true(('a', '!=', 1)))
+        self.assertFalse(self.registers.is_true(('a', '!=', 10)))
+
+        self.assertTrue(self.registers.is_true(('a', '>=', 9)))
+        self.assertTrue(self.registers.is_true(('a', '>=', 10)))
+        self.assertFalse(self.registers.is_true(('a', '>=', 11)))
+
+        self.assertTrue(self.registers.is_true(('a', '<=', 11)))
+        self.assertTrue(self.registers.is_true(('a', '<=', 10)))
+        self.assertFalse(self.registers.is_true(('a', '<=', 9)))
+
+        with self.assertRaises(RuntimeError):
+            self.registers.is_true(('a', '===', 1))
+
+    def test_excecute_instruction(self):
+        self.registers.registers = {}
+
+        self.registers.execute_instruction(('a', 'inc', 1))
+        self.assertEqual(self.registers.registers['a'], 1)
+        self.registers.execute_instruction(('a', 'inc', 2))
+        self.assertEqual(self.registers.registers['a'], 3)
+
+        self.registers.execute_instruction(('b', 'dec', 1))
+        self.assertEqual(self.registers.registers['b'], -1)
+        self.registers.execute_instruction(('b', 'dec', 2))
+        self.assertEqual(self.registers.registers['b'], -3)
+
+        self.registers.execute_instruction(('b', 'inc', 10))
+        self.assertEqual(self.registers.registers['b'], 7)
+
+        with self.assertRaises(RuntimeError):
+            self.registers.execute_instruction(('a', 'mul', 2))
 
 
 if __name__ == '__main__':
