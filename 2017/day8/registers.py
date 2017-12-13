@@ -1,8 +1,8 @@
 class Registers(object):
     def process_and_execute_instruction(self, instruction):
-        register, operator, value, rel_register, rel_operator, rel_value = \
-            self.parse_instruction(instruction)
-        self.is_true(rel_register, rel_operator, rel_value)
+        code, comparison = self.parse_instruction(instruction)
+        if self.is_true(comparison):
+            self.execute_instruction(code)
 
     def parse_instruction(self, instruction):
         register, operator, value, _, rel_register, rel_operator, rel_value = \
