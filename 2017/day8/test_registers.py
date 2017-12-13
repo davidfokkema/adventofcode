@@ -86,7 +86,7 @@ class RegisterTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.registers.is_true(('a', '===', 1))
 
-    def test_excecute_instruction(self):
+    def test_exececute_instruction(self):
         self.registers.registers = {}
 
         self.registers.execute_instruction(('a', 'inc', 1))
@@ -104,6 +104,13 @@ class RegisterTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             self.registers.execute_instruction(('a', 'mul', 2))
+
+    def test_exececute_instruction_stores_highest_value_ever(self):
+        self.registers.registers = {}
+        self.registers.execute_instruction(('a', 'inc', 10))
+        self.assertEqual(self.registers.highest_value_ever, 10)
+        self.registers.execute_instruction(('a', 'dec', 10))
+        self.assertEqual(self.registers.highest_value_ever, 10)
 
     @patch.object(Registers, 'process_and_execute_instruction')
     def test_parse_file(self, mock_process):
@@ -136,6 +143,7 @@ class RegisterAcceptanceTest(unittest.TestCase):
 
         self.assertEqual(registers.registers, {'a': 1, 'c': -10})
         self.assertEqual(registers.get_largest_value(), 1)
+        self.assertEqual(registers.get_largest_value_ever_held(), 10)
 
 
 if __name__ == '__main__':

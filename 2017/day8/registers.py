@@ -49,11 +49,22 @@ class Registers(object):
         else:
             raise RuntimeError("Unknown operator", operator)
 
+        largest_value = self.get_largest_value()
+        try:
+            if largest_value > self.highest_value_ever:
+                self.highest_value_ever = largest_value
+        except AttributeError:
+            self.highest_value_ever = largest_value
+
     def get_largest_value(self):
         return max(self.registers.values())
+
+    def get_largest_value_ever_held(self):
+        return self.highest_value_ever
 
 
 if __name__ == '__main__':
     registers = Registers()
     registers.parse_file('input.txt')
     print("Day 8, part 1:", registers.get_largest_value())
+    print("Day 8, part 2:", registers.get_largest_value_ever_held())
