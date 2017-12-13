@@ -51,3 +51,9 @@ class Registers(object):
 
     def get_largest_value(self):
         return max(self.registers.values())
+
+
+if __name__ == '__main__':
+    registers = Registers()
+    registers.parse_file('input.txt')
+    print("Day 8, part 1:", registers.get_largest_value())
