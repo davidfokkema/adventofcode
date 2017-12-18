@@ -42,6 +42,41 @@ class RemoveGarbageTest(unittest.TestCase):
         self.eat_garbage_test('<{o"i!a,<{i<a>')
 
 
+class CountGarbageCharactersTest(unittest.TestCase):
+    def setUp(self):
+        self.processor = StreamProcessor()
+
+    def eat_garbage_test(self, garbage, num_characters):
+        # Keep in mind: first < is already eaten before passing on to
+        # eat_garbage()
+        with StringIO(garbage[1:]) as s:
+            actual_num_characters = self.processor.eat_garbage(s)
+            rest = s.read()
+        self.assertEqual(rest, '')
+        self.assertEqual(actual_num_characters, num_characters)
+
+    def test_empty_garbage(self):
+        self.eat_garbage_test('<>', num_characters=0)
+
+    def test_long_garbage(self):
+        self.eat_garbage_test('<random characters>', num_characters=17)
+
+    def test_opening_garbage(self):
+        self.eat_garbage_test('<<<<>', num_characters=3)
+
+    def test_cancelled_garbage(self):
+        self.eat_garbage_test('<{!>}>', num_characters=2)
+
+    def test_doubly_cancelled_garbage(self):
+        self.eat_garbage_test('<!!>', num_characters=0)
+
+    def test_triple_cancelled_garbage(self):
+        self.eat_garbage_test('<!!!>>', num_characters=0)
+
+    def test_complex_garbage(self):
+        self.eat_garbage_test('<{o"i!a,<{i<a>', num_characters=10)
+
+
 class ProcessGroupTest(unittest.TestCase):
     def setUp(self):
         self.processor = StreamProcessor()
@@ -50,7 +85,7 @@ class ProcessGroupTest(unittest.TestCase):
         # Keep in mind: first { is already eaten before passing on to
         # process_group()
         with StringIO(group[1:]) as s:
-            actual_num_groups, _ = self.processor.process_group(s)
+            actual_num_groups, _, _ = self.processor.process_group(s)
             rest = s.read()
         self.assertEqual(rest, '')
         self.assertEqual(actual_num_groups, num_groups)
@@ -92,7 +127,7 @@ class ProcessGroupScoreTest(unittest.TestCase):
         # Keep in mind: first { is already eaten before passing on to
         # process_group()
         with StringIO(group[1:]) as s:
-            _, actual_score = self.processor.process_group(s)
+            _, actual_score, _ = self.processor.process_group(s)
             rest = s.read()
         self.assertEqual(rest, '')
         self.assertEqual(actual_score, score)
@@ -120,6 +155,36 @@ class ProcessGroupScoreTest(unittest.TestCase):
 
     def test_mostly_cancelled_garbage(self):
         self.process_group_score_test('{{<a!>},{<a!>},{<a!>},{<ab>}}', score=3)
+
+
+class CountGarbageWithinGroupsTest(unittest.TestCase):
+    def setUp(self):
+        self.processor = StreamProcessor()
+
+    def process_group_garbage_test(self, group, num_garbage=0):
+        # Keep in mind: first { is already eaten before passing on to
+        # process_group()
+        with StringIO(group[1:]) as s:
+            _, _, actual_garbage = self.processor.process_group(s)
+            rest = s.read()
+        self.assertEqual(rest, '')
+        self.assertEqual(actual_garbage, num_garbage)
+
+    def test_empty_group(self):
+        self.process_group_garbage_test('{}', num_garbage=0)
+
+    def test_empty_garbage(self):
+        self.process_group_garbage_test('{<>}', num_garbage=0)
+
+    def test_simple_garbage(self):
+        self.process_group_garbage_test('{<foo>}', num_garbage=3)
+
+    def test_nested_simple_garbage(self):
+        self.process_group_garbage_test('{{<foo>}}', num_garbage=3)
+
+    def test_complex_garbage(self):
+        self.process_group_garbage_test('{{<123>},<4567>,<89>}', num_garbage=9)
+
 
 
 if __name__ == '__main__':
