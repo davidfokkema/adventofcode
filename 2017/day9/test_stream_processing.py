@@ -16,7 +16,7 @@ class RemoveGarbageTest(unittest.TestCase):
             rest = s.read()
         self.assertEqual(rest, '')
 
-    def test_raises_exception_when_empty(self):
+    def test_raises_exception_when_stream_runs_out(self):
         with self.assertRaises(RuntimeError):
             self.eat_garbage_test('<')
 
@@ -41,6 +41,47 @@ class RemoveGarbageTest(unittest.TestCase):
     def test_complex_garbage(self):
         self.eat_garbage_test('<{o"i!a,<{i<a>')
 
+
+class ProcessGroupTest(unittest.TestCase):
+    def setUp(self):
+        self.processor = StreamProcessor()
+
+    def process_group_test(self, group, num_groups=0):
+        # Keep in mind: first { is already eaten before passing on to
+        # process_group()
+        with StringIO(group[1:]) as s:
+            actual_num_groups, _ = self.processor.process_group(s)
+            rest = s.read()
+        self.assertEqual(rest, '')
+        self.assertEqual(actual_num_groups, num_groups)
+
+    def test_raises_exception_when_stream_runs_out(self):
+        with self.assertRaises(RuntimeError):
+            self.process_group_test('{')
+
+    def test_empty_group(self):
+        self.process_group_test('{}', num_groups=1)
+
+    def test_three_nested_groups(self):
+        self.process_group_test('{{{}}}', num_groups=3)
+
+    def test_three_sequential_groups(self):
+        self.process_group_test('{{},{}}', num_groups=3)
+
+    def test_mixed_groups(self):
+        self.process_group_test('{{{},{},{{}}}}', num_groups=6)
+
+    def test_mixed_group_garbage(self):
+        self.process_group_test('{<{},{},{{}}>}', num_groups=1)
+
+    def test_sequential_garbage(self):
+        self.process_group_test('{<a>,<a>,<a>,<a>}', num_groups=1)
+
+    def test_grouped_garbage(self):
+        self.process_group_test('{{<a>},{<a>},{<a>},{<a>}}', num_groups=5)
+
+    def test_cancelled_garbage(self):
+        self.process_group_test('{{<!>},{<!>},{<!>},{<a>}}', num_groups=2)
 
 if __name__ == '__main__':
     unittest.main()
