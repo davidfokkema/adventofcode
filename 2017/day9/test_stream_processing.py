@@ -83,5 +83,44 @@ class ProcessGroupTest(unittest.TestCase):
     def test_cancelled_garbage(self):
         self.process_group_test('{{<!>},{<!>},{<!>},{<a>}}', num_groups=2)
 
+
+class ProcessGroupScoreTest(unittest.TestCase):
+    def setUp(self):
+        self.processor = StreamProcessor()
+
+    def process_group_score_test(self, group, score=0):
+        # Keep in mind: first { is already eaten before passing on to
+        # process_group()
+        with StringIO(group[1:]) as s:
+            _, actual_score = self.processor.process_group(s)
+            rest = s.read()
+        self.assertEqual(rest, '')
+        self.assertEqual(actual_score, score)
+
+    def test_empty_group(self):
+        self.process_group_score_test('{}', score=1)
+
+    def test_three_nested_groups(self):
+        self.process_group_score_test('{{{}}}', score=6)
+
+    def test_three_sequential_groups(self):
+        self.process_group_score_test('{{},{}}', score=5)
+
+    def test_mixed_groups(self):
+        self.process_group_score_test('{{{},{},{{}}}}', score=16)
+
+    def test_sequential_garbage(self):
+        self.process_group_score_test('{<a>,<a>,<a>,<a>}', score=1)
+
+    def test_grouped_garbage(self):
+        self.process_group_score_test('{{<ab>},{<ab>},{<ab>},{<ab>}}', score=9)
+
+    def test_doubly_cancelled_garbage(self):
+        self.process_group_score_test('{{<!!>},{<!!>},{<!!>},{<!!>}}', score=9)
+
+    def test_mostly_cancelled_garbage(self):
+        self.process_group_score_test('{{<a!>},{<a!>},{<a!>},{<ab>}}', score=3)
+
+
 if __name__ == '__main__':
     unittest.main()
