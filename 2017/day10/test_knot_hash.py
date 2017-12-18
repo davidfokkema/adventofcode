@@ -1,6 +1,6 @@
 import unittest
 
-from knot_hash import Ring
+from knot_hash import Ring, KnotHash
 
 
 class RingTest(unittest.TestCase):
@@ -72,6 +72,25 @@ class RingTest(unittest.TestCase):
     def test_reverse_part_of_ring(self):
         self.ring[1:4] = self.ring[3:0:-1]
         self.assertEqual(self.ring._ring, [0, 3, 2, 1, 4])
+
+
+class KnotTest(unittest.TestCase):
+    def setUp(self):
+        self.knot_hash = KnotHash(Ring(range(5)))
+
+    def test_individual_example_knots(self):
+        self.knot_hash.tie_knot(position=0, length=3)
+        self.assertEqual(self.knot_hash.ring._ring, [2, 1, 0, 3, 4])
+        self.knot_hash.tie_knot(position=3, length=4)
+        self.assertEqual(self.knot_hash.ring._ring, [4, 3, 0, 1, 2])
+        self.knot_hash.tie_knot(position=3, length=1)
+        self.assertEqual(self.knot_hash.ring._ring, [4, 3, 0, 1, 2])
+        self.knot_hash.tie_knot(position=1, length=5)
+        self.assertEqual(self.knot_hash.ring._ring, [3, 4, 2, 1, 0])
+
+    def test_tie_all_knots(self):
+        self.knot_hash.tie_all_knots(position=0, lengths=[3, 4, 1, 5])
+        self.assertEqual(self.knot_hash.ring._ring, [3, 4, 2, 1, 0])
 
 
 if __name__ == '__main__':
