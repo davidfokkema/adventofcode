@@ -1,4 +1,10 @@
 class StreamProcessor(object):
+    def parse_file(self, filename):
+        with open(filename) as f:
+            c = f.read(1)
+            assert c == '{'
+            return self.process_group(f)
+
     def eat_garbage(self, stream):
         while True:
             c = stream.read(1)
@@ -27,3 +33,9 @@ class StreamProcessor(object):
                 self.eat_garbage(stream)
             elif c == '':
                 raise RuntimeError("Stream dried up")
+
+
+if __name__ == '__main__':
+    processor = StreamProcessor()
+    num_groups, score = processor.parse_file('input.txt')
+    print("Day 9, part 1:", score)
