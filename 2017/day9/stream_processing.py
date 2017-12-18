@@ -44,5 +44,6 @@ class StreamProcessor(object):
 
 if __name__ == '__main__':
     processor = StreamProcessor()
-    _, score = processor.parse_file('input.txt')
+    _, score, garbage = processor.parse_file('input.txt')
     print("Day 9, part 1:", score)
+    print("Day 9, part 2:", garbage)
