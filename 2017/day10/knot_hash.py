@@ -41,3 +41,12 @@ class KnotHash(object):
     def tie_knot(self, position, length):
         start, stop = position, position + length
         self.ring[start:stop] = self.ring[stop - 1:start - 1: -1]
+
+
+if __name__ == '__main__':
+    with open('input.txt') as f:
+        lengths = [int(u) for u in f.readline().split(',')]
+
+    hash = KnotHash(Ring(range(256)))
+    hash.tie_all_knots(0, lengths)
+    print("Day 10, part 1:", hash.ring[0] * hash.ring[1])
