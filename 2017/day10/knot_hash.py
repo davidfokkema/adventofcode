@@ -27,8 +27,8 @@ class Ring(object):
                 self.__setitem__(idx, value)
 
 
-class KnotHash(object):
-    def __init__(self, ring):
+class SimpleKnotHash(object):
+    def __init__(self, ring, full_hash=False):
         self.ring = ring
 
     def tie_all_knots(self, position, lengths):
@@ -43,10 +43,20 @@ class KnotHash(object):
         self.ring[start:stop] = self.ring[stop - 1:start - 1: -1]
 
 
+class KnotHash(SimpleKnotHash):
+    def __init__(self, input):
+        self.ring = self.get_ascii_ring(input)
+
+    def get_ascii_ring(self, input):
+        return Ring([ord(u) for u in input])
+
+    
+
+
 if __name__ == '__main__':
     with open('input.txt') as f:
         lengths = [int(u) for u in f.readline().split(',')]
 
-    hash = KnotHash(Ring(range(256)))
+    hash = SimpleKnotHash(Ring(range(256)))
     hash.tie_all_knots(0, lengths)
     print("Day 10, part 1:", hash.ring[0] * hash.ring[1])
