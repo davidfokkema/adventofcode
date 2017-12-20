@@ -76,7 +76,8 @@ class RingTest(unittest.TestCase):
 
 class KnotTest(unittest.TestCase):
     def setUp(self):
-        self.knot_hash = KnotHash(Ring(range(5)))
+        self.knot_hash = KnotHash()
+        self.knot_hash.ring = Ring(range(5))
 
     def test_individual_example_knots(self):
         self.knot_hash.tie_knot(position=0, length=3)
@@ -89,8 +90,48 @@ class KnotTest(unittest.TestCase):
         self.assertEqual(self.knot_hash.ring._ring, [3, 4, 2, 1, 0])
 
     def test_tie_all_knots(self):
-        self.knot_hash.tie_all_knots(position=0, lengths=[3, 4, 1, 5])
+        self.knot_hash.tie_all_knots(lengths=[3, 4, 1, 5])
         self.assertEqual(self.knot_hash.ring._ring, [3, 4, 2, 1, 0])
+
+
+class KnotHashTest(unittest.TestCase):
+    def setUp(self):
+        self.knot_hash = KnotHash()
+
+    def test_get_lengths_from_string(self):
+        lengths = self.knot_hash.get_lengths_from_string('1,2,3')
+        self.assertEqual(lengths, [49, 44, 50, 44, 51, 17, 31, 73, 47, 23])
+
+    def test_preserve_skip_and_position(self):
+        self.assertEqual(self.knot_hash.position, 0)
+        self.assertEqual(self.knot_hash.skip, 0)
+        self.knot_hash.tie_all_knots(lengths=[3, 4])
+        self.assertEqual(self.knot_hash.position, 3 + 4 + 1)
+        self.assertEqual(self.knot_hash.skip, 2)
+
+    def test_reduce_sparse_hash(self):
+        # Change single value, otherwise the result will be zero
+        self.knot_hash.ring[47] = 1
+        hash_values = self.knot_hash.reduce_sparse_hash()
+        # Calculated manually
+        self.assertEqual(hash_values[2], 46)
+
+    def test_example_hashes(self):
+        knot_hash = KnotHash()
+        h = knot_hash.calculate_hash('')
+        self.assertEqual(h, 'a2582a3a0e66e6e86e3812dcb672a272')
+
+        knot_hash = KnotHash()
+        h = knot_hash.calculate_hash('AoC 2017')
+        self.assertEqual(h, '33efeb34ea91902bb2f59c9920caa6cd')
+
+        knot_hash = KnotHash()
+        h = knot_hash.calculate_hash('1,2,3')
+        self.assertEqual(h, '3efbe78a8d82f29979031a4aa0b16a9d')
+
+        knot_hash = KnotHash()
+        h = knot_hash.calculate_hash('1,2,4')
+        self.assertEqual(h, '63960835bcdc130f0b66d7ff4f6a5a8e')
 
 
 if __name__ == '__main__':
