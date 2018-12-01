@@ -1,8 +1,21 @@
-def calculate_frequency(frequency_shifts):
-    frequency = 0
-    for shift in frequency_shifts:
-        frequency += shift
-    return frequency
+class FrequencyShifter(object):
+
+    def __init__(self, frequency):
+        self.frequency = frequency
+        self.frequencies = []
+
+    def calculate_frequency(self, frequency_shifts):
+        frequency = self.frequency
+        for shift in frequency_shifts:
+            frequency += shift
+        return frequency
+
+    def find_first_duplicate_frequency(self, frequency_shifts):
+        pass
+
+    def has_duplicates(self):
+        return len(self.frequencies) != len(set(self.frequencies))
+
 
 def read_shifts_from_file(filename):
     with open(filename) as f:
@@ -11,6 +24,7 @@ def read_shifts_from_file(filename):
 
 
 if __name__ == '__main__':
+    shifter = FrequencyShifter(0)
     shifts = read_shifts_from_file('./input.txt')
-    frequency = calculate_frequency(shifts)
+    frequency = shifter.calculate_frequency(shifts)
     print(f"Day 1: frequency is {frequency}")
