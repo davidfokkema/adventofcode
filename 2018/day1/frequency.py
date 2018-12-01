@@ -1,20 +1,25 @@
-class FrequencyShifter(object):
+import itertools
 
-    def __init__(self, frequency):
-        self.frequency = frequency
-        self.frequencies = []
 
-    def calculate_frequency(self, frequency_shifts):
-        frequency = self.frequency
-        for shift in frequency_shifts:
-            frequency += shift
-        return frequency
+def calculate_frequency(frequency_shifts):
+    frequency = 0
+    for shift in frequency_shifts:
+        frequency += shift
+    return frequency
 
-    def find_first_duplicate_frequency(self, frequency_shifts):
-        pass
 
-    def has_duplicates(self):
-        return len(self.frequencies) != len(set(self.frequencies))
+def find_first_duplicate_frequency(frequency_shifts):
+    frequency = 0
+    frequencies = [frequency]
+    for shift in itertools.cycle(frequency_shifts):
+        frequency += shift
+        frequencies.append(frequency)
+        if has_duplicates(frequencies):
+            return frequency
+
+
+def has_duplicates(values):
+    return len(values) != len(set(values))
 
 
 def read_shifts_from_file(filename):
@@ -24,7 +29,8 @@ def read_shifts_from_file(filename):
 
 
 if __name__ == '__main__':
-    shifter = FrequencyShifter(0)
     shifts = read_shifts_from_file('./input.txt')
-    frequency = shifter.calculate_frequency(shifts)
+    frequency = calculate_frequency(shifts)
     print(f"Day 1: frequency is {frequency}")
+    first_duplicate = find_first_duplicate_frequency(shifts)
+    print(f"Day 1 (part 2): first duplicate frequency is {first_duplicate}")
