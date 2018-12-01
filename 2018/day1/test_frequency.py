@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import patch, mock_open
 
 from frequency import (calculate_frequency, read_shifts_from_file,
-                        has_duplicates, find_first_duplicate_frequency)
+                        last_value_is_duplicate,
+                        find_first_duplicate_frequency)
 
 
 class FrequencyTest(unittest.TestCase):
@@ -18,9 +19,9 @@ class FrequencyTest(unittest.TestCase):
             shifts = read_shifts_from_file('foo.txt')
         self.assertEqual(shifts, [-1, -2, 3])
 
-    def test_has_duplicates(self):
-        self.assertEqual(has_duplicates([1, 2, 3]), False)
-        self.assertEqual(has_duplicates([1, 2, 3, 2]), True)
+    def test_last_value_is_duplicate(self):
+        self.assertEqual(last_value_is_duplicate([1, 2, 3]), False)
+        self.assertEqual(last_value_is_duplicate([1, 2, 3, 2]), True)
 
     def test_find_first_duplicate_frequency(self):
         self.assertEqual(find_first_duplicate_frequency([+1, -1]), 0)

@@ -14,12 +14,12 @@ def find_first_duplicate_frequency(frequency_shifts):
     for shift in itertools.cycle(frequency_shifts):
         frequency += shift
         frequencies.append(frequency)
-        if has_duplicates(frequencies):
+        if last_value_is_duplicate(frequencies):
             return frequency
 
 
-def has_duplicates(values):
-    return len(values) != len(set(values))
+def last_value_is_duplicate(values):
+        return values[-1] in values[:-1]
 
 
 def read_shifts_from_file(filename):
