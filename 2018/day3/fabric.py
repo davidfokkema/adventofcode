@@ -22,11 +22,23 @@ class Fabric(object):
     def count_overlapping_squares(self):
         return (self.fabric >= 2).sum()
 
+    def find_intact_claim_id(self):
+        for claim in self.claims:
+            if self.check_intact_claim(claim):
+                return self.get_claim_id(claim)
+        return None
+
     def process_claim(self, claim):
         match = re.match(claim_regexp, claim)
         x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
                                                              'height']]
         self.fabric[x:x + width, y:y + height] += 1
+
+    def check_intact_claim(self, claim):
+        match = re.match(claim_regexp, claim)
+        x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
+                                                             'height']]
+        return (self.fabric[x:x + width, y:y+ height] == 1).all()
 
     @staticmethod
     def calculate_claim_size(claim):
@@ -44,6 +56,10 @@ class Fabric(object):
             sizes_y.append(size_y)
         return (max(sizes_x), max(sizes_y))
 
+    def get_claim_id(self, claim):
+        match = re.match(claim_regexp, claim)
+        return int(match.group('claim_id'))
+
 
 if __name__ == '__main__':
     with open('input.txt') as f:
@@ -53,3 +69,6 @@ if __name__ == '__main__':
     fabric.process_claims()
     num_squares = fabric.count_overlapping_squares()
     print(f"Day 3, part 1: number of overlapping squares is {num_squares}")
+
+    claim_id = fabric.find_intact_claim_id()
+    print(f"Day 3, part 2: intact claim id is {claim_id}")
