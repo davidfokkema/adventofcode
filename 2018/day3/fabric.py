@@ -1,4 +1,7 @@
+from collections import namedtuple
 import re
+
+import numpy as np
 
 
 claim_regexp = '#(?P<claim_id>\d+) @ (?P<x>\d+),(?P<y>\d+): ' \
@@ -6,6 +9,21 @@ claim_regexp = '#(?P<claim_id>\d+) @ (?P<x>\d+),(?P<y>\d+): ' \
 
 
 class Fabric(object):
+
+    def __init__(self, claims):
+        self.claims = claims
+        size_x, size_y = self.calculate_fabric_size(claims)
+        self.fabric = np.zeros((size_x, size_y))
+
+    def process_claims(self):
+        for claim in self.claims:
+            self.process_claim(claim)
+
+    def process_claim(self, claim):
+        match = re.match(claim_regexp, claim)
+        x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
+                                                             'height']]
+        self.fabric[x:x + width, y:y + height] += 1
 
     @staticmethod
     def calculate_claim_size(claim):
