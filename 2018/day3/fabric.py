@@ -19,6 +19,9 @@ class Fabric(object):
         for claim in self.claims:
             self.process_claim(claim)
 
+    def count_disputed_squares(self):
+        return (self.fabric >= 2).sum()
+
     def process_claim(self, claim):
         match = re.match(claim_regexp, claim)
         x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
@@ -40,3 +43,13 @@ class Fabric(object):
             sizes_x.append(size_x)
             sizes_y.append(size_y)
         return (max(sizes_x), max(sizes_y))
+
+
+if __name__ == '__main__':
+    with open('input.txt') as f:
+        claims = f.readlines()
+
+    fabric = Fabric(claims)
+    fabric.process_claims()
+    num_squares = fabric.count_disputed_squares()
+    print(f"Day 3, part 1: number of disputed squares is {num_squares}")
