@@ -25,8 +25,8 @@ class FabricTest(unittest.TestCase):
         self.assertEqual(self.fabric.fabric[2, 3], 1)
         self.assertEqual(self.fabric.fabric[3, 3], 2)
 
-    def test_count_disputed_squares(self):
-        self.assertEqual(self.fabric.count_disputed_squares(), 4)
+    def test_count_overlapping_squares(self):
+        self.assertEqual(self.fabric.count_overlapping_squares(), 4)
 
 
 if __name__ == '__main__':

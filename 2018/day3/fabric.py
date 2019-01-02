@@ -19,7 +19,7 @@ class Fabric(object):
         for claim in self.claims:
             self.process_claim(claim)
 
-    def count_disputed_squares(self):
+    def count_overlapping_squares(self):
         return (self.fabric >= 2).sum()
 
     def process_claim(self, claim):
@@ -51,5 +51,5 @@ if __name__ == '__main__':
 
     fabric = Fabric(claims)
     fabric.process_claims()
-    num_squares = fabric.count_disputed_squares()
-    print(f"Day 3, part 1: number of disputed squares is {num_squares}")
+    num_squares = fabric.count_overlapping_squares()
+    print(f"Day 3, part 1: number of overlapping squares is {num_squares}")
