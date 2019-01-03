@@ -1,11 +1,9 @@
-from collections import namedtuple
 import re
 
 import numpy as np
 
 
-claim_regexp = '#(?P<claim_id>\d+) @ (?P<x>\d+),(?P<y>\d+): ' \
-               '(?P<width>\d+)x(?P<height>\d+)'
+claim_regexp = '#(\d+) @ (\d+),(\d+): (\d+)x(\d+)'
 
 
 class Fabric(object):
@@ -24,28 +22,23 @@ class Fabric(object):
 
     def find_intact_claim_id(self):
         for claim in self.claims:
-            if self.check_intact_claim(claim):
-                return self.get_claim_id(claim)
+            if self.is_claim_intact(claim):
+                id, _, _, _, _ = self.get_claim_properties(claim)
+                return id
         return None
 
     def process_claim(self, claim):
-        match = re.match(claim_regexp, claim)
-        x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
-                                                             'height']]
+        _, x, y, width, height = self.get_claim_properties(claim)
         self.fabric[x:x + width, y:y + height] += 1
 
-    def check_intact_claim(self, claim):
-        match = re.match(claim_regexp, claim)
-        x, y, width, height = [int(match.group(u)) for u in ['x', 'y', 'width',
-                                                             'height']]
-        return (self.fabric[x:x + width, y:y+ height] == 1).all()
+    def is_claim_intact(self, claim):
+        _, x, y, width, height = self.get_claim_properties(claim)
+        return (self.fabric[x:x + width, y:y + height] == 1).all()
 
-    @staticmethod
-    def calculate_claim_size(claim):
-        match = re.match(claim_regexp, claim)
-        size_x = int(match.group('x')) + int(match.group('width'))
-        size_y = int(match.group('y')) + int(match.group('height'))
-        return (size_x, size_y)
+    @classmethod
+    def calculate_claim_size(cls, claim):
+        _, x, y, width, height = cls.get_claim_properties(claim)
+        return (x + width, y + height)
 
     @classmethod
     def calculate_fabric_size(cls, claims):
@@ -56,9 +49,10 @@ class Fabric(object):
             sizes_y.append(size_y)
         return (max(sizes_x), max(sizes_y))
 
-    def get_claim_id(self, claim):
+    @staticmethod
+    def get_claim_properties(claim):
         match = re.match(claim_regexp, claim)
-        return int(match.group('claim_id'))
+        return [int(u) for u in match.groups()]
 
 
 if __name__ == '__main__':

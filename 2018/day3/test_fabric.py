@@ -28,10 +28,10 @@ class FabricTest(unittest.TestCase):
     def test_count_overlapping_squares(self):
         self.assertEqual(self.fabric.count_overlapping_squares(), 4)
 
-    def test_check_intact_claim(self):
-        self.assertEqual(self.fabric.check_intact_claim(claims[0]), False)
-        self.assertEqual(self.fabric.check_intact_claim(claims[1]), False)
-        self.assertEqual(self.fabric.check_intact_claim(claims[2]), True)
+    def test_is_claim_intact(self):
+        self.assertEqual(self.fabric.is_claim_intact(claims[0]), False)
+        self.assertEqual(self.fabric.is_claim_intact(claims[1]), False)
+        self.assertEqual(self.fabric.is_claim_intact(claims[2]), True)
 
     def test_find_intact_claim_id(self):
         self.assertEqual(self.fabric.find_intact_claim_id(), 3)
