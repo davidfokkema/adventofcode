@@ -4,12 +4,15 @@ import re
 import numpy as np
 
 
-def find_guard_with_most_sleep():
-    return '#10'
+def find_guard_with_most_sleep(records):
+    totals = [v.sum() for v in records.values()]
+    idx = totals.index(max(totals))
+    return list(records.keys())[idx]
 
 
-def find_minute_with_most_sleep(guard):
-    return 24
+def find_minute_with_most_sleep(records, guard):
+    minutes = records[guard]
+    return minutes.argmax()
 
 
 def add_up_repose_records(records):
