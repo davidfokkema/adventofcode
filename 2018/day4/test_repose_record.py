@@ -4,7 +4,7 @@ from repose_record import (find_guard_with_most_sleep,
                            find_minute_with_most_sleep, add_up_repose_records)
 
 
-TEST_INPUT = """
+TEST_INPUT = """\
 [1518-11-01 00:00] Guard #10 begins shift
 [1518-11-01 00:05] falls asleep
 [1518-11-01 00:25] wakes up
@@ -22,7 +22,7 @@ TEST_INPUT = """
 [1518-11-05 00:03] Guard #99 begins shift
 [1518-11-05 00:45] falls asleep
 [1518-11-05 00:55] wakes up
-"""
+""".splitlines()
 
 
 class ReposeRecordTest(unittest.TestCase):

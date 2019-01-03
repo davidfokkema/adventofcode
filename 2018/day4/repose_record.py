@@ -1,3 +1,6 @@
+from collections import defaultdict
+import re
+
 import numpy as np
 
 
@@ -10,6 +13,19 @@ def find_minute_with_most_sleep(guard):
 
 
 def add_up_repose_records(records):
-    minutes1 = np.array([1 if u == '#' else 0 for u in ".....####################.....#########################....."])
-    minutes2 = np.array([1 if u == '#' else 0 for u in "........................#####..............................."])
-    return {'#10': minutes1 + minutes2}
+    added_records = defaultdict(lambda: np.zeros(60))
+
+    for record in records:
+        if 'begins shift' in record:
+            guard = re.search('#\d+', record).group(0)
+        else:
+            minute = int(re.search(':(\d+)', record).group(1))
+            if 'falls asleep' in record:
+                start = minute
+            elif 'wakes up' in record:
+                end = minute
+                added_records[guard][start:end] += 1
+            else:
+                raise RuntimeError("Unknown record")
+
+    return added_records
