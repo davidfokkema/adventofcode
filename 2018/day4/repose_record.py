@@ -20,7 +20,7 @@ def add_up_repose_records(records):
 
     for record in records:
         if 'begins shift' in record:
-            guard = re.search('#\d+', record).group(0)
+            guard = int(re.search('#(\d+)', record).group(1))
         else:
             minute = int(re.search(':(\d+)', record).group(1))
             if 'falls asleep' in record:
@@ -32,3 +32,14 @@ def add_up_repose_records(records):
                 raise RuntimeError("Unknown record")
 
     return added_records
+
+
+if __name__ == '__main__':
+    with open('input.txt') as f:
+        records = sorted(f.readlines())
+
+    records = add_up_repose_records(records)
+    guard = find_guard_with_most_sleep(records)
+    minute = find_minute_with_most_sleep(records, guard)
+
+    print(f"Day 4, part 1: {guard * minute}")
