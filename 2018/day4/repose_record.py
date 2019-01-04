@@ -15,6 +15,14 @@ def find_minute_with_most_sleep(records, guard):
     return minutes.argmax()
 
 
+def find_most_slept_minute_overall(records):
+    max_sleep_counts = [v.max() for v in records.values()]
+    idx = max_sleep_counts.index(max(max_sleep_counts))
+    guard = list(records.keys())[idx]
+    minute = records[guard].argmax()
+    return minute, guard
+
+
 def add_up_repose_records(records):
     added_records = defaultdict(lambda: np.zeros(60))
 
@@ -39,7 +47,10 @@ if __name__ == '__main__':
         records = sorted(f.readlines())
 
     records = add_up_repose_records(records)
+
     guard = find_guard_with_most_sleep(records)
     minute = find_minute_with_most_sleep(records, guard)
-
     print(f"Day 4, part 1: {guard * minute}")
+
+    minute, guard = find_most_slept_minute_overall(records)
+    print(f"Day 4, part 2: {guard * minute}")

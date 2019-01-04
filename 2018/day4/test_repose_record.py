@@ -1,7 +1,9 @@
 import unittest
 
 from repose_record import (find_guard_with_most_sleep,
-                           find_minute_with_most_sleep, add_up_repose_records)
+                           find_minute_with_most_sleep,
+                           find_most_slept_minute_overall,
+                           add_up_repose_records)
 
 
 TEST_INPUT = """\
@@ -34,6 +36,11 @@ class ReposeRecordTest(unittest.TestCase):
 
     def test_find_minute_with_most_sleep(self):
         self.assertEqual(find_minute_with_most_sleep(self.records, 10), 24)
+
+    def test_find_most_slept_minute_overall(self):
+        minute, guard = find_most_slept_minute_overall(self.records)
+        self.assertEqual(minute, 45)
+        self.assertEqual(guard, 99)
 
     def test_make_repose_record(self):
         self.assertEqual(self.records[10][4], 0)
