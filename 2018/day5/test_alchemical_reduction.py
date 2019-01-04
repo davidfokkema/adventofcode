@@ -1,6 +1,7 @@
 import unittest
 
-from alchemical_reduction import reduce_polymer
+from alchemical_reduction import (reduce_polymer, remove_type_and_react,
+                                  find_length_of_shortest_polymer)
 
 
 class AlchemicalReductionTest(unittest.TestCase):
@@ -18,6 +19,15 @@ class AlchemicalReductionTest(unittest.TestCase):
         self.assertEqual(reduce_polymer("AaaBbc"), "ac")
         self.assertEqual(reduce_polymer("CAaaBbc"), "Cac")
         self.assertEqual(reduce_polymer("cAaBbC"), "")
+
+    def test_remove_type_and_react(self):
+        polymer = "dabAcCaCBAcCcaDA"
+        self.assertEqual(remove_type_and_react(polymer, 'a'), "dbCBcD")
+        self.assertEqual(remove_type_and_react(polymer, 'c'), "daDA")
+
+    def test_find_length_of_shortest_polymer(self):
+        polymer = "dabAcCaCBAcCcaDA"
+        self.assertEqual(find_length_of_shortest_polymer(polymer), 4)
 
 
 if __name__ == '__main__':
