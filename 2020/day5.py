@@ -32,3 +32,7 @@ if __name__ == "__main__":
     print(f"Highest seat ID is {max(seat_ids)}")
 
     print(f"My seat is {find_empty_seat(seat_ids)}")
+
+    # Much simpler:
+    all_seat_ids = set(range(min(seat_ids), max(seat_ids) + 1))
+    print(f"My seat is {all_seat_ids - set(seat_ids)}")
